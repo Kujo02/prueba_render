@@ -1,9 +1,9 @@
-from flask import Flask,request,jsonify
+from flask import Flask,request,jsonify,Response
 from flask_mysqldb import MySQL
 from dotenv import load_dotenv
 import os
 from flask_pymongo import PyMongo
-from bson import ObjectId
+from bson import ObjectId,json_util
 
 app = Flask(__name__)
 load_dotenv()
@@ -110,7 +110,9 @@ def get_mongo():
 
     usuarios = mongo.db.users.find()
 
-    return jsonify(usuarios)
+    response = json_util.dumps(usuarios)
+
+    return Response(response, mimetype="application/json")
 
 
 @app.route("/get_mongo/<id>",methods=["GET"])
