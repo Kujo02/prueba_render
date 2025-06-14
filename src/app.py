@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import os
 from flask_pymongo import PyMongo
 from bson import ObjectId,json_util
+from traceback import format_exc
 
 app = Flask(__name__)
 load_dotenv()
@@ -104,7 +105,10 @@ def add_mongo():
 
             return jsonify(response)
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({
+            "error": str(e),
+            "trace": format_exc()
+        }), 500
 
 @app.route("/get_mongo",methods=["GET"])
 def get_mongo():
