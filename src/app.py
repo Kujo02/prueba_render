@@ -81,29 +81,30 @@ def delete_sql(id):
 
 @app.route("/add_mongo",methods=["POST"])
 def add_mongo():
+    try:
+        name = request.json["name"]
+        email = request.json["email"]
+        password = request.json["password"]
 
-    name = request.json["name"]
-    email = request.json["email"]
-    password = request.json["password"]
+        if name and email and password:
 
-    if name and email and password:
+            result = mongo.db.users.insert_one({
+                "name": name,
+                "email": email,
+                "password": password
+            })
 
-        result = mongo.db.users.insert_one({
-            "name": name,
-            "email": email,
-            "password": password
-        })
+            response = {
 
-        response = {
+                "id": str(result.inserted_id),
+                "name": name,
+                "email": email,
+                "password": password
+            }
 
-            "id": str(result.inserted_id),
-            "name": name,
-            "email": email,
-            "password": password
-        }
-
-        return jsonify(response)
-
+            return jsonify(response)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/get_mongo",methods=["GET"])
 def get_mongo():
